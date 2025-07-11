@@ -575,7 +575,7 @@ function imageExists(src) {
 async function generatePdf() {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
-  const bg = await loadImageAsDataURL('./background.png');
+  const bg = await loadImageAsDataURL('./background2.png');
 
   // Show progress UI
   const statusEl = document.getElementById("pdf-status");
