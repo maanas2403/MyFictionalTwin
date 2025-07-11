@@ -6,11 +6,14 @@
   <title>MyFictionalTwin</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="container">
     <h1>My Fictional Twin</h1>
     <p class="subheading">Out of 1000+ characters from your favorite movies, shows, and franchises, find out which one you're most like! </p>
-
+    <div id="pdf-status" style="display: none; text-align: center; margin-top: 20px;">
+  <p id="pdf-message" style="font-size: 1.2rem; color: #ffe600;">Preparing your PDF...</p>
+</div>
     <div id="start-screen">
       <button id="startBtn" class="primary-btn">Start Quiz</button>
     </div>
@@ -23,6 +26,7 @@
         <button id="submitBtn" class="primary-btn" style="display:none;">Submit</button>
       </div>
     </div>
+    <div id="pdf-content" style="display: none;"></div>
 
     <div id="search-controls" style="display:none;">
   <input type="text" id="searchInput" list="showList" placeholder="Type and select a show name to filter..." />
@@ -31,6 +35,7 @@
 </div>
 <div id="retake-container" style="display:none; text-align:center; margin-top:2rem;">
   <button id="retakeBtn" class="primary-btn">Retake Quiz</button>
+  <button id="createPdfBtn" class="primary-btn">Create PDF</button>
 </div>
 
     <div id="results"></div>
@@ -42,6 +47,11 @@
 
     </div>
   </div>
+  
   <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+
 </body>
 </html>
