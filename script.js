@@ -1,4 +1,4 @@
-const DEBUG_RESULTS_ONLY = true;
+const DEBUG_RESULTS_ONLY = false;
 window.addEventListener("DOMContentLoaded", () => {
   const savedAnswers = localStorage.getItem("quizAnswers");
   if (savedAnswers) {
