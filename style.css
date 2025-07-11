@@ -238,7 +238,12 @@ button:hover {
 h3{
   font-weight: 400;
 }
+#pdf-status p {
+  font-family: 'Bangers', cursive;
+  text-shadow: 1px 1px #000;
+}
 
+/* ========== 📱 Mobile Responsive Styles ========== */
 @media (max-width: 768px) {
   .container {
     margin: 1rem auto;
@@ -308,4 +313,3 @@ h3{
     margin: 0.2rem 0;
   }
 }
-
