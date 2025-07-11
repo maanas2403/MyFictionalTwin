@@ -1,4 +1,4 @@
-const DEBUG_RESULTS_ONLY = false;
+const DEBUG_RESULTS_ONLY = true;
 window.addEventListener("DOMContentLoaded", () => {
   const savedAnswers = localStorage.getItem("quizAnswers");
   if (savedAnswers) {
@@ -553,10 +553,218 @@ function calculateResults() {
   });
 
   renderOverallBest();
+  document.getElementById("retake-container").style.display = "block";
+document.getElementById("createPdfBtn").addEventListener("click", generatePdf);
+
   localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
+}
+function imageExists(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
 }
 
 
+// Load these scripts in index.html
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+async function generatePdf() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+  const bg = await loadImageAsDataURL('./background2.png');
+
+  // Show progress UI
+  const statusEl = document.getElementById("pdf-status");
+  const msgEl = document.getElementById("pdf-message");
+  statusEl.style.display = "block";
+  msgEl.textContent = "Preparing your PDF...";
+
+  const grouped = {};
+  allSimilarities.forEach(char => {
+    if (!grouped[char.Show]) grouped[char.Show] = [];
+    if (grouped[char.Show].length < 5) grouped[char.Show].push(char);
+  });
+
+  const shows = Object.entries(grouped);
+  for (let i = 0; i < shows.length; i += 2) {
+    const renderingShows = shows.slice(i, i + 2).map(([show]) => show).join(" & ");
+    msgEl.textContent = `Rendering: ${renderingShows}`;
+
+    const page = document.createElement('div');
+    page.style.width = '800px';
+    page.style.minHeight = '1123px';
+    page.style.padding = '40px';
+    page.style.backgroundImage = `url(${bg})`;
+    page.style.backgroundSize = 'cover';
+    page.style.color = '#fff';
+    page.style.fontFamily = "'Bangers', cursive";
+    page.style.fontWeight = '400';
+    page.style.boxSizing = 'border-box';
+    page.style.lineHeight = '1.5';
+    page.style.position = 'relative';
+
+    const title = document.createElement('div');
+    title.textContent = 'My Fictional Twin';
+    title.style.color = '#ffe600';
+    title.style.fontSize = '1.8rem';
+    title.style.fontWeight = '400';
+    title.style.textAlign = 'center';
+    title.style.textShadow = '1px 1px #000';
+    title.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    title.style.border = '3px solid #ffb347';
+    title.style.borderRadius = '12px';
+    title.style.marginBottom = '20px';
+    title.style.padding = '10px';
+    page.appendChild(title);
+
+    for (let j = 0; j < 2 && i + j < shows.length; j++) {
+      const [show, chars] = shows[i + j];
+
+      const sectionWrapper = document.createElement('div');
+      sectionWrapper.style.background = 'rgba(0, 0, 0, 0.8)';
+      sectionWrapper.style.border = '3px solid #ffb347';
+      sectionWrapper.style.borderRadius = '12px';
+      sectionWrapper.style.padding = '15px';
+      sectionWrapper.style.margin = '20px 0';
+
+      const header = document.createElement('h2');
+      header.textContent = show;
+      header.style.color = '#ffb347';
+      header.style.fontWeight = '400';
+      header.style.fontSize = '1.4rem';
+      header.style.textShadow = '1px 1px #000';
+      header.style.marginBottom = '10px';
+      sectionWrapper.appendChild(header);
+
+      for (const char of chars) {
+        const imageUrl = `./characters/${encodeURIComponent(char.Character).replace(/%20/g, ' ')}.png`;
+        const imgExists = await imageExists(imageUrl);
+
+        const div = document.createElement('div');
+        div.style.background = 'rgba(255,255,255,0.1)';
+        div.style.borderLeft = '5px solid #ffe600';
+        div.style.padding = '8px';
+        div.style.borderRadius = '8px';
+        div.style.margin = '8px 0';
+        div.style.color = '#fff';
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+
+        if (imgExists) {
+          const wrapper = document.createElement('div');
+          wrapper.style.width = '48px';
+          wrapper.style.height = '48px';
+          wrapper.style.borderRadius = '50%';
+          wrapper.style.overflow = 'hidden';
+          wrapper.style.marginRight = '10px';
+          wrapper.style.border = '2px solid #ffe600';
+          wrapper.style.display = 'flex';
+          wrapper.style.alignItems = 'center';
+          wrapper.style.justifyContent = 'center';
+
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'cover';
+          img.style.display = 'block';
+
+          wrapper.appendChild(img);
+          div.appendChild(wrapper);
+        }
+
+        const text = document.createElement('div');
+        text.innerHTML = `<strong style="color:#ffe600; font-size:1.1rem; font-weight: 500;">${char.Character}</strong><br><span style="color:#fff; font-size:1rem; font-weight: 500;">${char.similarity}% match</span>`;
+        div.appendChild(text);
+
+        sectionWrapper.appendChild(div);
+      }
+
+      page.appendChild(sectionWrapper);
+    }
+
+    document.body.appendChild(page);
+    await new Promise(r => requestAnimationFrame(r));
+    const canvas = await html2canvas(page, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    if (i > 0) pdf.addPage();
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    document.body.removeChild(page);
+  }
+
+  msgEl.textContent = "Finalizing and saving your PDF...";
+  pdf.save('MyFictionalTwin.pdf');
+  statusEl.style.display = "none";
+}
+
+function loadImageAsDataURL(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      resolve(canvas.toDataURL());
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+function imageExists(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+async function renderShowToPdf(pdf, characters, showName, yOffset) {
+  const container = document.createElement("div");
+  container.style.width = "800px";
+  container.style.padding = "20px";
+  container.style.fontFamily = "'Segoe UI', sans-serif";
+  container.style.lineHeight = "1.6";
+  container.style.background = "#ffffff";
+  container.style.color = "#000";
+  container.innerHTML = `<h2 style="color:#ff3860;">${showName}</h2>`;
+
+  characters
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, 5)
+    .forEach(char => {
+      const div = document.createElement("div");
+      div.style.margin = "8px 0";
+      div.style.padding = "8px";
+      div.style.borderLeft = "4px solid #ff3860";
+      div.style.background = "#f9f9f9";
+      div.style.borderRadius = "6px";
+      div.innerHTML = `<strong>${char.Character}</strong> – ${char.similarity}% match`;
+      container.appendChild(div);
+    });
+
+  document.body.appendChild(container);
+  await new Promise(r => requestAnimationFrame(r));
+
+  const canvas = await html2canvas(container, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+  const imgProps = pdf.getImageProperties(imgData);
+  const pdfWidth = pdf.internal.pageSize.getWidth() - 80;
+  const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  pdf.addImage(imgData, 'PNG', 40, yOffset, pdfWidth, imgHeight);
+  document.body.removeChild(container);
+}
 
 
 
