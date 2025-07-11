@@ -1,20 +1,4 @@
 const DEBUG_RESULTS_ONLY = false;
-window.addEventListener("DOMContentLoaded", () => {
-  const savedAnswers = localStorage.getItem("quizAnswers");
-  if (savedAnswers) {
-    userAnswers = JSON.parse(savedAnswers);
-    calculateResults(); // ✅ Recalculate similarity
-    document.getElementById("start-screen").style.display = "none";
-  }
-
-  const retakeBtn = document.getElementById("retakeBtn");
-  if (retakeBtn) {
-    retakeBtn.addEventListener("click", () => {
-      localStorage.removeItem("quizAnswers");
-      location.reload();
-    });
-  }
-});
 
 
 
@@ -555,7 +539,7 @@ function calculateResults() {
   renderOverallBest();
   document.getElementById("retake-container").style.display = "block";
 document.getElementById("createPdfBtn").addEventListener("click", generatePdf);
-
+localStorage.setItem("quizResults", JSON.stringify(allSimilarities));
   localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
 }
 function imageExists(src) {
@@ -574,7 +558,8 @@ function imageExists(src) {
 
 async function generatePdf() {
   const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+  const pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
+
   const bg = await loadImageAsDataURL('./background2.png');
 
   // Show progress UI
@@ -886,4 +871,28 @@ document.addEventListener("DOMContentLoaded", () => {
     searchInput.value = "";
     renderOverallBest();
   });
+});
+window.addEventListener('load', () => {
+  const savedResults = localStorage.getItem('quizResults');
+  const savedAnswers = localStorage.getItem('quizAnswers');
+
+  if (savedResults && savedAnswers) {
+    userAnswers = JSON.parse(savedAnswers);
+    allSimilarities = JSON.parse(savedResults);
+
+    // Hide other screens
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'none';
+    document.getElementById('result-container')?.style?.setProperty('display', 'block');
+    document.getElementById("search-controls").style.display = "block";
+
+    renderOverallBest();
+    document.getElementById("retake-container").style.display = "block";
+  }
+});
+
+document.getElementById("retakeBtn")?.addEventListener("click", () => {
+  localStorage.removeItem("quizResults");
+  localStorage.removeItem("quizAnswers");
+  location.reload();
 });
