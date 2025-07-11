@@ -238,3 +238,74 @@ button:hover {
 h3{
   font-weight: 400;
 }
+
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .subheading {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+  }
+
+  #searchInput {
+    width: 90%;
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .question-block {
+    padding: 1rem;
+  }
+
+  .question-block p,
+  .qtext {
+    font-size: 1.05rem;
+  }
+
+  .qnum {
+    font-size: 0.85rem;
+  }
+
+  .option-card {
+    font-size: 0.95rem;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .option-card input {
+    transform: scale(1.1);
+    margin-right: 0.4rem;
+  }
+
+
+
+  .char-img,
+  .fallback-img {
+    width: 48px;
+    height: 48px;
+    font-size: 1.4rem;
+    line-height: 48px;
+    margin-bottom: 0.6rem;
+  }
+
+  .char-name,
+  .char-match,
+  .char-meta,
+  .char-show {
+    margin: 0.2rem 0;
+  }
+}
+
