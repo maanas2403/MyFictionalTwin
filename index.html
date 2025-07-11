@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyFictionalTwin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>My Fictional Twin</h1>
+    <p class="subheading">Out of 1000+ characters from your favorite movies, shows, and franchises, find out which one you're most like! </p>
+
+    <div id="start-screen">
+      <button id="startBtn" class="primary-btn">Start Quiz</button>
+    </div>
+
+    <div id="quiz-container" style="display:none;">
+      <div id="question-area"></div>
+      <div class="nav-buttons">
+        <button id="backBtn" class="secondary-btn">Back</button>
+        <button id="nextBtn" class="primary-btn">Next</button>
+        <button id="submitBtn" class="primary-btn" style="display:none;">Submit</button>
+      </div>
+    </div>
+
+    <div id="search-controls" style="display:none;">
+  <input type="text" id="searchInput" list="showList" placeholder="Type and select a show name to filter..." />
+  <datalist id="showList"></datalist>
+  <button id="resetBtn" class="secondary-btn">Reset</button>
+</div>
+<div id="retake-container" style="display:none; text-align:center; margin-top:2rem;">
+  <button id="retakeBtn" class="primary-btn">Retake Quiz</button>
+</div>
+
+    <div id="results"></div>
+
+<!-- ✅ Add this below the results div -->
+
+
+
+
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

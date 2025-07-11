@@ -1,0 +1,240 @@
+/* === Comic-Themed Personality Quiz CSS === */
+
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Segoe+UI&display=swap');
+
+body {
+  font-family: 'Bangers', cursive;
+  
+  background: url('./background.png') center center / cover no-repeat fixed;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  position: relative;
+  z-index: 0;
+  overflow-x: hidden;
+}
+
+/* Dark overlay for readability */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: -1;
+}
+
+/* Container is like a comic panel */
+.container {
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 4px solid #ffb347;
+  border-radius: 16px;
+  box-shadow: 0 0 20px #000;
+  backdrop-filter: blur(6px);
+}
+
+/* Headline like a comic title */
+h1 {
+  font-family: 'Bangers', cursive;
+  font-weight: 400;
+  font-size: 3rem;
+  text-align: center;
+  color: #ffe600;
+  text-shadow: 1px 1px #000;
+  margin-bottom: 0.5rem;
+}
+
+.subheading {
+  text-align: center;
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px #000;
+}
+
+/* Comic-style buttons */
+button {
+  font-family: 'Bangers', cursive;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  margin: 1rem 0.5rem;
+  cursor: pointer;
+  color: #fff;
+  letter-spacing: 1px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 12px #ffe600;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #ffb347, #ffe600);
+}
+
+.secondary-btn {
+  background: #444;
+}
+
+/* Quiz input */
+#searchInput {
+  width: 80%;
+  max-width: 500px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #26263a;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 56, 96, 0.4);
+  transition: box-shadow 0.3s ease;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+#searchInput:focus {
+  box-shadow: 0 0 15px #ffe600;
+}
+
+/* Quiz Questions */
+.question-block {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px dashed #ffe600;
+  padding: 1.2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.question-block p {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.qnum {
+  font-size: 1rem;
+  color: #ffe600;
+}
+
+.qtext {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+/* Options like comic choice cards */
+.stylish-options {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.option-card {
+  background-color: #333347;
+  padding: 0.9rem 1.2rem;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  display: block;
+  color: #fff;
+}
+
+.option-card:hover {
+  border-color: #ffb347;
+  background-color: #44445c;
+}
+
+.option-card input {
+  margin-right: 0.6rem;
+  transform: scale(1.2);
+}
+
+/* Result styling */
+.result-item {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.07);
+  border-left: 5px solid #ffe600;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 0 12px rgba(255, 56, 96, 0.3);
+}
+
+.result-item strong {
+  font-size: 1.3rem;
+  color: #ffe600;
+  margin-right: 8px;
+}
+
+/* Character image */
+.char-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 15px;
+  border: 3px solid #ffe600;
+  box-shadow: 0 0 10px #000;
+}
+
+/* Fallback image if missing */
+.fallback-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #444;
+  color: #fff;
+  font-size: 2rem;
+  text-align: center;
+  line-height: 64px;
+  margin-right: 15px;
+}
+
+/* Search/retake layout */
+#search-controls {
+  margin-top: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#start-screen {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.char-name {
+  font-weight: 400;
+  color: #ffe600;
+  font-size: 1.5rem;
+}
+
+.char-meta {
+  margin: 0 0.3rem;
+  color: #ccc;
+  font-weight: 400;
+}
+
+.char-show {
+  font-weight: 500;
+  color: #ffb347;
+  font-style: normal;
+  font-size: 1.5rem;
+}
+
+.char-match {
+  margin-left: 0.5rem;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+h3{
+  font-weight: 400;
+}
