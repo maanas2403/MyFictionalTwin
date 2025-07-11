@@ -575,7 +575,7 @@ function imageExists(src) {
 async function generatePdf() {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
-  const bg = await loadImageAsDataURL('./background2.png');
+  const bg = await loadImageAsDataURL('./background.png');
 
   // Show progress UI
   const statusEl = document.getElementById("pdf-status");
@@ -586,8 +586,14 @@ async function generatePdf() {
   const grouped = {};
   allSimilarities.forEach(char => {
     if (!grouped[char.Show]) grouped[char.Show] = [];
-    if (grouped[char.Show].length < 5) grouped[char.Show].push(char);
+    grouped[char.Show].push(char);
   });
+
+  // Sort each show's characters by similarity and keep top 5
+  for (let show in grouped) {
+    grouped[show].sort((a, b) => b.similarity - a.similarity);
+    grouped[show] = grouped[show].slice(0, 5);
+  }
 
   const shows = Object.entries(grouped);
   for (let i = 0; i < shows.length; i += 2) {
@@ -602,7 +608,6 @@ async function generatePdf() {
     page.style.backgroundSize = 'cover';
     page.style.color = '#fff';
     page.style.fontFamily = "'Bangers', cursive";
-    page.style.fontWeight = '400';
     page.style.boxSizing = 'border-box';
     page.style.lineHeight = '1.5';
     page.style.position = 'relative';
@@ -611,7 +616,6 @@ async function generatePdf() {
     title.textContent = 'My Fictional Twin';
     title.style.color = '#ffe600';
     title.style.fontSize = '1.8rem';
-    title.style.fontWeight = '400';
     title.style.textAlign = 'center';
     title.style.textShadow = '1px 1px #000';
     title.style.backgroundColor = 'rgba(0,0,0,0.6)';
@@ -634,7 +638,6 @@ async function generatePdf() {
       const header = document.createElement('h2');
       header.textContent = show;
       header.style.color = '#ffb347';
-      header.style.fontWeight = '400';
       header.style.fontSize = '1.4rem';
       header.style.textShadow = '1px 1px #000';
       header.style.marginBottom = '10px';
@@ -668,9 +671,9 @@ async function generatePdf() {
 
           const img = document.createElement('img');
           img.src = imageUrl;
+          img.style.transform = 'scale(1.2)';
           img.style.width = '100%';
-          img.style.height = '100%';
-          img.style.objectFit = 'cover';
+          img.style.height = 'auto';
           img.style.display = 'block';
 
           wrapper.appendChild(img);
@@ -678,7 +681,7 @@ async function generatePdf() {
         }
 
         const text = document.createElement('div');
-        text.innerHTML = `<strong style="color:#ffe600; font-size:1.1rem; font-weight: 500;">${char.Character}</strong><br><span style="color:#fff; font-size:1rem; font-weight: 500;">${char.similarity}% match</span>`;
+        text.innerHTML = `<strong style="color:#ffe600; font-size:1.1rem;">${char.Character}</strong><br><span style="color:#fff; font-size:1rem;">${char.similarity}% match</span>`;
         div.appendChild(text);
 
         sectionWrapper.appendChild(div);
